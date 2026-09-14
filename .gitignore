@@ -9,3 +9,4 @@ build/
 .venv/
 .smd/
 *.smd
+.DS_Store
