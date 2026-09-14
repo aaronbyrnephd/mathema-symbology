@@ -112,13 +112,6 @@ def test_pct_change_composed_symbol_round_trips_through_backticks():
     _round_trip("pct_change_ebit", "%ΔEBIT", safe=False)
 
 
-def test_separator_override_changes_the_top_level_join():
-    _write_config('separator: " | "\n')
-    cj = claim("for x in [0, 100], f(x) >= 0")
-    rendered = render_claim_text(cj, unicode=True)
-    assert rendered == "∀ x ∈ [0.0, 100.0] ⊂ ℝ ∪ {∅} | f(x) ≥ 0"
-
-
 def test_show_missing_override_is_threaded_through_to_render_domain(monkeypatch):
     import mathema.grammar as grammar_module
 

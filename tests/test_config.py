@@ -31,14 +31,12 @@ params:
   price: P
 funcs:
   velocity: v
-separator: "; "
 show_missing: false
 enabled: true
 """)
     config = _config.load_config()
     assert config["params"] == {"price": "P"}
     assert config["funcs"] == {"velocity": "v"}
-    assert config["separator"] == "; "
     assert config["show_missing"] is False
     assert config["enabled"] is True
 
@@ -69,12 +67,6 @@ def test_non_mapping_top_level_is_rejected():
 def test_params_section_must_be_a_mapping():
     _write_config("params: not_a_mapping\n")
     with pytest.raises(_config.SymbologyConfigError, match="must be a mapping"):
-        _config.load_config()
-
-
-def test_separator_must_be_a_string():
-    _write_config("separator: 5\n")
-    with pytest.raises(_config.SymbologyConfigError, match="'separator' must be a string"):
         _config.load_config()
 
 

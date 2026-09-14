@@ -11,7 +11,6 @@ Schema (every key optional):
       <real parameter name>: <symbol>
     funcs:
       <function alias name>: <symbol>
-    separator: <string>
     show_missing: <bool>
     enabled: <bool>
 
@@ -98,10 +97,6 @@ def load_config() -> dict[str, Any]:
         "params": _validate_mapping(raw, "params"),
         "funcs": _validate_mapping(raw, "funcs"),
     }
-    if "separator" in raw:
-        if not isinstance(raw["separator"], str):
-            raise SymbologyConfigError(f"{_CONFIG_PATH}: 'separator' must be a string")
-        config["separator"] = raw["separator"]
     if "show_missing" in raw:
         if not isinstance(raw["show_missing"], bool):
             raise SymbologyConfigError(f"{_CONFIG_PATH}: 'show_missing' must be a boolean")

@@ -75,11 +75,11 @@ A name none of these recognise renders unchanged.
 
 ## Configuration
 
-`.mathema/symbology.yaml` takes four keys, all optional: `params` and
-`funcs` map names to symbols, `separator` replaces the ", " between
-claim segments, and `show_missing` controls whether an unbounded
-domain prints whether missing values are included or excluded. A symbol that isn't a valid Python
-identifier goes inside of backticks (handled in mathema):
+`.mathema/symbology.yaml` takes three keys, all optional: `params` and
+`funcs` map names to symbols, and `show_missing` controls whether an
+unbounded domain prints whether missing values are included or
+excluded. A symbol that isn't a valid Python identifier goes inside of
+backticks (handled in mathema):
 
 ```yaml
 params:
@@ -108,4 +108,4 @@ Apache-2.0, see [LICENSE](LICENSE).
 
 ## Version
 
-This is 0.1.0 and the interface may change before 1.0.
+This is 0.2.0 and the interface may change before 1.0.

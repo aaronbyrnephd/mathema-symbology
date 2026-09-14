@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2026 Aaron Byrne
-"""The four protocol functions: delta/pct_change composition, the
+"""The three protocol functions: delta/pct_change composition, the
 YAML-override-over-default-mapping precedence, and the "nothing to
 say" `None`/default fallbacks the capability contract depends on."""
 import pytest
@@ -99,10 +99,6 @@ def test_bare_pct_change_with_no_rest_is_not_treated_as_compositional():
     assert _symbology.symbol_for_param("pct_change_") is None
 
 
-def test_separator_default_matches_mathema_core_default():
-    assert _symbology.separator() == ", "
-
-
 def test_show_missing_defers_by_default():
     assert _symbology.show_missing(cj=None) is None
 
@@ -119,10 +115,9 @@ def test_yaml_can_supply_a_symbol_the_default_mapping_has_no_opinion_on():
     assert _symbology.symbol_for_func("velocity") == "v"
 
 
-def test_yaml_can_override_separator_and_show_missing():
+def test_yaml_can_override_show_missing():
     _config._CONFIG_PATH.parent.mkdir(parents=True, exist_ok=True)
-    _config._CONFIG_PATH.write_text("separator: \"; \"\nshow_missing: false\n")
-    assert _symbology.separator() == "; "
+    _config._CONFIG_PATH.write_text("show_missing: false\n")
     assert _symbology.show_missing(cj=None) is False
 
 
@@ -131,15 +126,13 @@ def test_config_enabled_false_silences_every_hook():
     _config._CONFIG_PATH.write_text("enabled: false\nparams:\n  price: Pi\n")
     assert _symbology.symbol_for_param("price") is None
     assert _symbology.symbol_for_func("anything") is None
-    assert _symbology.separator() == ", "
     assert _symbology.show_missing(cj=None) is None
 
 
 def test_env_var_disable_silences_every_hook(monkeypatch):
     _config._CONFIG_PATH.parent.mkdir(parents=True, exist_ok=True)
-    _config._CONFIG_PATH.write_text("params:\n  price: Pi\nseparator: \"; \"\n")
+    _config._CONFIG_PATH.write_text("params:\n  price: Pi\n")
     monkeypatch.setenv("MATHEMA_SYMBOLOGY_DISABLE", "1")
     assert _symbology.symbol_for_param("price") is None
     assert _symbology.symbol_for_func("anything") is None
-    assert _symbology.separator() == ", "
     assert _symbology.show_missing(cj=None) is None

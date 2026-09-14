@@ -2,10 +2,9 @@
 # Copyright 2026 Aaron Byrne
 """Symbol lookups for mathema claim rendering.
 
-Provides symbol_for_param, symbol_for_func, separator and show_missing.
-Each returns None when it has no value for a given name, which mathema
-treats the same as this package not being installed. separator returns
-its stated default instead.
+Provides symbol_for_param, symbol_for_func and show_missing. Each
+returns None when it has no value for a given name, which mathema
+treats the same as this package not being installed.
 
 Lookups consult the project's .mathema/symbology.yaml first, then the
 built-in table in _default_mapping.py.
@@ -109,15 +108,6 @@ def symbol_for_func(name: str) -> str | None:
     if override is not None:
         return override
     return _DEFAULT_FUNC_SYMBOLS.get(name)
-
-
-def separator() -> str:
-    """Returns the segment separator, ", " unless the project config
-    overrides it."""
-    if is_disabled():
-        return ", "
-    sep: str = load_config().get("separator", ", ")
-    return sep
 
 
 def show_missing(cj: object) -> bool | None:
