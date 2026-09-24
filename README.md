@@ -75,11 +75,14 @@ A name none of these recognise renders unchanged.
 
 ## Configuration
 
-`.mathema/symbology.yaml` takes three keys, all optional: `params` and
-`funcs` map names to symbols, and `show_missing` controls whether an
+`.mathema/symbology.yaml` takes four keys, all optional: `params` and
+`funcs` map names to symbols, `show_missing` controls whether an
 unbounded domain prints whether missing values are included or
-excluded. A symbol that isn't a valid Python identifier goes inside of
-backticks (handled in mathema):
+excluded, and `enabled: false` switches the package off for the project.
+A symbol that isn't a valid Python identifier goes inside of backticks
+(handled in mathema). The file is found from the working directory,
+under the nearest `.mathema/` within the enclosing repository, so a
+command run from a subdirectory reads the project's own file.
 
 ```yaml
 params:
@@ -89,13 +92,19 @@ funcs:
   payback: PB
 ```
 
+Setting `MATHEMA_SYMBOLOGY_DISABLE=1` in the environment switches it off
+for one run, whatever the file says.
+
 ## Adding a symbol
 
 Open a pull request against the table in
 [`src/mathema_symbology/_default_mapping.py`](src/mathema_symbology/_default_mapping.py).
-An entry has to be real, standard notation in some field, worth making the default for parameter names that match. The missing-symbol issue template asks for details about its inclusion. 
+An entry has to be real, standard notation in some field, worth making
+the default for parameter names that match. The missing-symbol issue
+template asks for the details that justify including it.
 
-For specific symbols that don't generalise beyond your codebase just use the approach in [Configuration ](#configuration)
+For symbols that don't generalise beyond your codebase, use
+[Configuration](#configuration) instead.
 
 ## Requirements
 
@@ -108,4 +117,5 @@ Apache-2.0, see [LICENSE](LICENSE).
 
 ## Version
 
-This is 0.2.0 and the interface may change before 1.0.
+The interface may change before 1.0; the installed version is
+`mathema_symbology.__version__`.
