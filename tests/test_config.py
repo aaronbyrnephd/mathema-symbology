@@ -89,3 +89,41 @@ def test_config_enabled_false_disables_without_env_var():
 
 def test_default_is_enabled():
     assert _config.is_disabled() is False
+
+
+# --- where the config file is found ------------------------------------------
+
+def _project(root, text):
+    (root / ".git").mkdir(parents=True)
+    (root / ".mathema").mkdir()
+    (root / ".mathema" / "symbology.yaml").write_text(text)
+    return root
+
+
+def test_config_is_found_from_a_subdirectory(monkeypatch, tmp_path):
+    monkeypatch.setattr(_config, "_CONFIG_PATH", None)
+    root = _project(tmp_path / "proj", "params:\n  price: Pi\n")
+    (root / "src" / "pkg").mkdir(parents=True)
+    monkeypatch.chdir(root / "src" / "pkg")
+    assert _config.load_config()["params"] == {"price": "Pi"}
+
+
+def test_config_follows_the_working_directory(monkeypatch, tmp_path):
+    monkeypatch.setattr(_config, "_CONFIG_PATH", None)
+    a = _project(tmp_path / "a", "params:\n  price: Pa\n")
+    b = _project(tmp_path / "b", "params:\n  price: Pb\n")
+    monkeypatch.chdir(a)
+    assert _config.load_config()["params"] == {"price": "Pa"}
+    monkeypatch.chdir(b)
+    assert _config.load_config()["params"] == {"price": "Pb"}
+
+
+def test_config_search_stops_at_the_repository_top(monkeypatch, tmp_path):
+    # a .mathema/ above the enclosing repository belongs to something else
+    monkeypatch.setattr(_config, "_CONFIG_PATH", None)
+    (tmp_path / ".mathema").mkdir()
+    (tmp_path / ".mathema" / "symbology.yaml").write_text("params:\n  price: Pout\n")
+    repo = tmp_path / "repo"
+    (repo / ".git").mkdir(parents=True)
+    monkeypatch.chdir(repo)
+    assert _config.load_config() == {}
