@@ -3,6 +3,7 @@ name: tests
 on:
   push:
   pull_request:
+  workflow_call:
 
 jobs:
   standalone:
@@ -17,15 +18,22 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - run: pip install . pytest ruff mypy types-PyYAML
+      - name: licence headers
+        run: |
+          status=0
+          for f in $(git ls-files '*.py'); do
+            if [ "$(sed -n 1p "$f")" != "# SPDX-License-Identifier: Apache-2.0" ] ||
+               [ "$(sed -n 2p "$f")" != "# Copyright 2026 Aaron Byrne" ]; then
+              echo "$f: missing licence header lines"; status=1
+            fi
+          done
+          exit $status
       - run: ruff check .
       - run: mypy src
       - run: pytest -v
 
   integration:
     runs-on: ubuntu-latest
-    # mathema is not on PyPI yet; drop continue-on-error once it
-    # installs cleanly from there
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

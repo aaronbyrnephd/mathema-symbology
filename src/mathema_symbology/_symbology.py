@@ -24,7 +24,7 @@ from __future__ import annotations
 
 import re
 
-from ._config import is_disabled, load_config
+from ._config import SymbologyConfigError, is_disabled, load_config
 from ._default_mapping import (
     _DEFAULT_FUNC_SYMBOLS,
     _DEFAULT_PARAM_SYMBOLS,
@@ -112,8 +112,13 @@ def symbol_for_func(name: str) -> str | None:
 
 def show_missing(cj: object) -> bool | None:
     """Returns the project config's show_missing value for the claim
-    cj, or None when the config doesn't set one."""
-    if is_disabled():
+    cj, or None when the config doesn't set one or cannot be read; a
+    malformed config is reported by the symbol hooks, so this hook has
+    no opinion rather than raising into every render."""
+    try:
+        if is_disabled():
+            return None
+        value: bool | None = load_config().get("show_missing")
+    except SymbologyConfigError:
         return None
-    value: bool | None = load_config().get("show_missing")
     return value
