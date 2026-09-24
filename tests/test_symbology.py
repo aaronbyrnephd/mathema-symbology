@@ -136,3 +136,11 @@ def test_env_var_disable_silences_every_hook(monkeypatch):
     assert _symbology.symbol_for_param("price") is None
     assert _symbology.symbol_for_func("anything") is None
     assert _symbology.show_missing(cj=None) is None
+
+
+def test_show_missing_has_no_opinion_when_the_config_is_malformed():
+    # the symbol hooks report a malformed file; show_missing answers
+    # "no opinion" rather than raising into every render
+    _config._CONFIG_PATH.parent.mkdir(parents=True, exist_ok=True)
+    _config._CONFIG_PATH.write_text("params: [not, a, mapping]\n")
+    assert _symbology.show_missing(cj=None) is None
