@@ -159,4 +159,6 @@ def test_representative_default_mapping_claims_adjudicate_identically_regardless
     monkeypatch.delenv("MATHEMA_SYMBOLOGY_DISABLE", raising=False)
     result_active = check_conjectures(func, [cj])[0]
 
-    assert result_disabled.verdict == result_active.verdict == "holds"
+    # mathema 0.6 attempts a proof before sampling, so these settle as
+    # proven; the point of the test is that the two runs agree
+    assert result_disabled.verdict == result_active.verdict == "proven"
